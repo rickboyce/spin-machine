@@ -1,5 +1,5 @@
 (() => {
-  const { beep, fanfare, initAudio, qs, setMuted } = window.SpinMachine;
+  const { beep, capsuleSvg, fanfare, initAudio, qs, setMuted } = window.SpinMachine;
   const capsuleColors = ["#ef4444", "#ec4899", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6"];
   const votes = [
     { id: "hype", label: "Spicy Topic", icon: "🔥", color: "text-indigo-400" },
@@ -28,16 +28,6 @@
   let timerInterval = null;
   let totalSeconds = 120;
   let timerRunning = false;
-
-  function capsuleSvg(color, size = 45) {
-    return `
-      <svg width="${size}" height="${size}" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M25 5C13.95 5 5 13.95 5 25C5 26.5 5.5 28 6.5 29.5L25 25L43.5 29.5C44.5 28 45 26.5 45 25C45 13.95 36.05 5 25 5Z" fill="${color}"/>
-        <path d="M25 45C36.05 45 45 36.05 45 25L25 25L5 25C5 36.05 13.95 45 25 45Z" fill="#cbd5e1"/>
-        <circle cx="25" cy="25" r="4" fill="white"/>
-      </svg>
-    `;
-  }
 
   function renderCapsules() {
     qs("capsules-chamber").innerHTML = capsuleColors.map((color, index) => {
