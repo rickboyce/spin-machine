@@ -1,6 +1,8 @@
 # Spin Machine
 
-Static meeting tools for Friday team rituals.
+Vibe coded tools for great Friday team meeting vibes.
+
+Live site: https://rickboyce.github.io/spin-machine/
 
 ## Modes
 
