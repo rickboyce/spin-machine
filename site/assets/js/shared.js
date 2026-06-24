@@ -188,6 +188,26 @@ window.SpinMachine = (() => {
     `;
   }
 
+  function weightedChoice(items, getWeight) {
+    const weightedItems = items.map((item) => ({
+      item,
+      weight: Math.max(0, Number(getWeight(item)) || 0)
+    }));
+    const totalWeight = weightedItems.reduce((total, entry) => total + entry.weight, 0);
+
+    if (totalWeight <= 0) {
+      return items[Math.floor(Math.random() * items.length)];
+    }
+
+    let threshold = Math.random() * totalWeight;
+    for (const entry of weightedItems) {
+      threshold -= entry.weight;
+      if (threshold <= 0) return entry.item;
+    }
+
+    return weightedItems.at(-1).item;
+  }
+
   return {
     beep,
     capsuleSvg,
@@ -201,6 +221,7 @@ window.SpinMachine = (() => {
     setMuted,
     startLoop,
     stopLoop,
-    timeLabel
+    timeLabel,
+    weightedChoice
   };
 })();
