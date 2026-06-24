@@ -1,0 +1,79 @@
+body {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+@keyframes machine-shake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-3px, 2px) rotate(-1deg); }
+  20% { transform: translate(3px, -1px) rotate(1deg); }
+  30% { transform: translate(-1px, -2px) rotate(-1.5deg); }
+  40% { transform: translate(2px, 1px) rotate(1deg); }
+  50% { transform: translate(-2px, 2px) rotate(-1deg); }
+  60% { transform: translate(3px, -1px) rotate(1.5deg); }
+  70% { transform: translate(-3px, 1px) rotate(-1deg); }
+  80% { transform: translate(2px, -2px) rotate(1deg); }
+  90% { transform: translate(-1px, 2px) rotate(-0.5deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.animate-shake {
+  animation: machine-shake 0.8s cubic-bezier(.36, .07, .19, .97) infinite both;
+}
+
+@keyframes capsule-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+.animate-float-slow {
+  animation: capsule-float 4s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: capsule-float 4.5s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
+.animate-float-fast {
+  animation: capsule-float 3.5s ease-in-out infinite;
+  animation-delay: 0.7s;
+}
+
+@keyframes ticket-shoot {
+  0% { opacity: 0; transform: translateY(150px) scale(0.1) rotate(20deg); }
+  50% { opacity: 1; transform: translateY(-30px) scale(1.05) rotate(-5deg); }
+  100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+}
+
+.animate-ticket-shoot {
+  animation: ticket-shoot 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.neon-glow-primary {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+}
+
+.neon-glow-accent {
+  box-shadow: 0 0 25px rgba(236, 72, 153, 0.5);
+}
+
+.capsule-glow {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}

@@ -1,0 +1,182 @@
+:root {
+  --primary: #4f46e5;
+  --primary-dark: #3730a3;
+  --accent: #f43f5e;
+  --panel: rgba(255, 255, 255, 0.95);
+  --ink: #1e293b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Outfit", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--ink);
+}
+
+.app-shell {
+  background-color: #0f172a;
+  background-image:
+    radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+    radial-gradient(at 52% 0%, hsla(225, 39%, 30%, 1) 0, transparent 48%),
+    radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+  min-height: 100vh;
+}
+
+.app-kicker {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border: 1px solid rgba(129, 140, 248, 0.35);
+  border-radius: 999px;
+  background: rgba(79, 70, 229, 0.2);
+  color: #c7d2fe;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  padding: 0.45rem 0.75rem;
+  text-transform: uppercase;
+}
+
+.glass-card {
+  background: var(--panel);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.icon-button {
+  align-items: center;
+  border-radius: 1rem;
+  display: inline-flex;
+  height: 3.5rem;
+  justify-content: center;
+  transition: border-color 160ms ease, color 160ms ease, transform 160ms ease;
+  width: 3.5rem;
+}
+
+.icon-button:active {
+  transform: scale(0.96);
+}
+
+.btn-pushable {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  outline-offset: 4px;
+  padding: 0;
+  position: relative;
+  transition: filter 250ms;
+  user-select: none;
+}
+
+.btn-pushable:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.8);
+}
+
+.btn-shadow,
+.btn-edge {
+  border-radius: 12px;
+  inset: 0;
+  position: absolute;
+}
+
+.btn-shadow {
+  background: hsl(0deg 0% 0% / 0.25);
+  transform: translateY(2px);
+  transition: transform 600ms cubic-bezier(.3, .7, .4, 1);
+}
+
+.btn-edge {
+  background: linear-gradient(
+    to left,
+    hsl(243deg 75% 30%) 0%,
+    hsl(243deg 75% 45%) 8%,
+    hsl(243deg 75% 45%) 92%,
+    hsl(243deg 75% 30%) 100%
+  );
+}
+
+.btn-front {
+  background: var(--primary);
+  border-radius: 12px;
+  color: white;
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 900;
+  padding: 12px 28px;
+  position: relative;
+  transform: translateY(-4px);
+  transition: transform 600ms cubic-bezier(.3, .7, .4, 1);
+}
+
+.btn-pushable:hover .btn-front {
+  transform: translateY(-6px);
+  transition: transform 250ms cubic-bezier(.3, .7, .4, 1.5);
+}
+
+.btn-pushable:active .btn-front {
+  transform: translateY(-2px);
+  transition: transform 34ms;
+}
+
+.btn-pushable:hover .btn-shadow {
+  transform: translateY(4px);
+  transition: transform 250ms cubic-bezier(.3, .7, .4, 1.5);
+}
+
+.btn-pushable:active .btn-shadow {
+  transform: translateY(1px);
+  transition: transform 34ms;
+}
+
+.loader {
+  animation: rotation 1s linear infinite;
+  border: 3px solid #fff;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  box-sizing: border-box;
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+}
+
+@keyframes rotation {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.result-entry {
+  animation: slide-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (max-width: 520px) {
+  .btn-front {
+    font-size: 0.95rem;
+    padding-inline: 18px;
+  }
+}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Friday Flip</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/shared.css">
+  <link rel="stylesheet" href="../assets/css/friday-flip.css">
+</head>
+<body class="app-shell flex flex-col items-center px-4 py-8">
+  <nav class="mb-8 w-full max-w-6xl">
+    <a href="../index.html" class="text-sm font-bold text-indigo-100 hover:text-white">← All modes</a>
+  </nav>
+
+  <header class="mb-10 text-center">
+    <p class="app-kicker mb-3">Interactive Meeting Tool</p>
+    <h1 class="text-5xl font-black tracking-tight text-white md:text-6xl">The Friday Flip</h1>
+    <p class="mt-2 text-lg font-light italic text-indigo-200">Spin a person, reveal a weekly reflection prompt.</p>
+  </header>
+
+  <main class="grid w-full max-w-6xl grid-cols-1 items-start gap-8 lg:grid-cols-12">
+    <section class="flex flex-col items-center gap-8 lg:col-span-7">
+      <div class="wheel-container">
+        <div class="wheel-pointer"></div>
+        <svg id="wheel-svg" viewBox="0 0 500 500" aria-label="Category wheel">
+          <circle cx="250" cy="250" r="248" fill="rgba(30, 27, 75, 0.9)" stroke="#4f46e5" stroke-width="4"></circle>
+          <g id="wheel-content"></g>
+          <circle cx="250" cy="250" r="25" fill="#f8fafc" stroke="#1e1b4b" stroke-width="6"></circle>
+          <circle cx="250" cy="250" r="8" fill="#4f46e5"></circle>
+        </svg>
+      </div>
+
+      <div class="flex w-full max-w-sm items-center justify-center gap-4">
+        <button id="spinBtn" class="btn-pushable flex-1">
+          <span class="btn-shadow"></span>
+          <span class="btn-edge"></span>
+          <span class="btn-front">SPIN TO REVEAL</span>
+        </button>
+        <button id="muteBtn" class="icon-button shrink-0 border border-slate-200 bg-white/95 text-indigo-600 shadow-sm hover:border-indigo-400" title="Toggle sound" aria-label="Toggle sound">
+          <span id="soundOnIcon">🔊</span>
+          <span id="soundOffIcon" class="hidden text-slate-400">🔇</span>
+        </button>
+      </div>
+
+      <aside class="glass-card relative mt-4 w-full max-w-lg rounded-3xl border-l-4 border-indigo-500 p-5">
+        <div class="flex items-center gap-4">
+          <div class="animate-float flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg">⚡</div>
+          <div>
+            <p class="text-xs font-bold uppercase tracking-tighter text-indigo-500">Spin-Master 2.5</p>
+            <p id="aiCommentary" class="text-sm italic leading-relaxed text-slate-700"></p>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="flex flex-col gap-6 lg:col-span-5">
+      <div id="resultCard" class="result-entry glass-card hidden overflow-hidden rounded-3xl border-t-8 border-indigo-500">
+        <div class="p-8">
+          <span class="mb-2 block text-xs font-black uppercase tracking-widest text-indigo-400">The Verdict</span>
+          <h2 id="resultName" class="mb-2 text-5xl font-extrabold text-slate-900"></h2>
+          <div class="inline-flex items-center gap-2 rounded-lg border border-yellow-200 bg-yellow-100 px-3 py-1 text-sm font-bold text-yellow-800">
+            <span>★</span>
+            <span id="resultCategory">Category</span>
+          </div>
+
+          <div id="aiPromptArea" class="mt-8 hidden rounded-2xl border border-indigo-100 bg-indigo-50/50 p-5">
+            <span class="mb-3 block text-[10px] font-bold uppercase tracking-widest text-indigo-400">AI Deep Dive</span>
+            <p id="aiPromptText" class="text-sm font-medium italic leading-snug text-indigo-900"></p>
+          </div>
+
+          <div class="mt-8 grid grid-cols-1 gap-3">
+            <button id="aiBtn" class="rounded-xl bg-slate-900 py-4 font-bold text-white shadow-xl transition-all hover:bg-black active:scale-95">Generate AI Question</button>
+            <div class="grid grid-cols-2 gap-3">
+              <button id="acceptBtn" class="rounded-xl bg-emerald-500 py-3 font-bold text-white shadow-lg transition-all hover:bg-emerald-600 active:scale-95">I'll Answer</button>
+              <button id="nominateBtn" class="rounded-xl border-2 border-slate-200 bg-white py-3 font-bold text-slate-600 transition-all hover:border-indigo-500 hover:text-indigo-600 active:scale-95">Pass/Nominate</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="nominationPanel" class="result-entry glass-card hidden rounded-3xl p-6">
+        <h3 class="mb-4 text-lg font-bold text-slate-800">Choose a Substitute</h3>
+        <div id="nomineeList" class="mb-6 grid grid-cols-2 gap-2"></div>
+        <button id="cancelNominationBtn" class="w-full text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-slate-600">Cancel</button>
+      </div>
+
+      <div class="glass-card rounded-3xl p-6">
+        <div class="mb-4 flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-black uppercase tracking-widest text-slate-400">Team Presence</h3>
+            <p class="text-[10px] text-slate-400">Click a badge to toggle attendance</p>
+          </div>
+          <span id="teamCount" class="rounded bg-indigo-100 px-2 py-0.5 text-[10px] font-bold text-indigo-600"></span>
+        </div>
+        <div id="teamGrid" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <div class="glass-card rounded-3xl p-6">
+        <h3 class="mb-4 text-sm font-black uppercase tracking-widest text-slate-400">Recent Highlights</h3>
+        <div id="historyLog" class="max-h-[150px] space-y-3 overflow-y-auto pr-2 text-xs">
+          <p class="text-slate-400 italic">No spins yet. Let's start the show!</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../assets/js/shared.js"></script>
+  <script src="../assets/js/friday-flip.js"></script>
+</body>
+</html>

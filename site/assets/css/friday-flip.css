@@ -1,0 +1,26 @@
+.wheel-container {
+  height: min(90vw, 480px);
+  perspective: 1000px;
+  position: relative;
+  width: min(90vw, 480px);
+}
+
+#wheel-svg {
+  filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.2));
+  height: 100%;
+  transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1);
+  width: 100%;
+}
+
+.wheel-pointer {
+  background: var(--accent);
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+  height: 50px;
+  left: 50%;
+  position: absolute;
+  top: -15px;
+  transform: translateX(-50%);
+  width: 40px;
+  z-index: 20;
+}

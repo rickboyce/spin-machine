@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Friday Vibe Lucky Dip</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/shared.css">
+  <link rel="stylesheet" href="../assets/css/lucky-dip.css">
+</head>
+<body class="min-h-screen overflow-x-hidden bg-slate-950 text-slate-100">
+  <canvas id="confetti-canvas" class="pointer-events-none fixed left-0 top-0 z-50 h-full w-full"></canvas>
+
+  <header class="sticky top-0 z-30 border-b border-slate-800 bg-slate-900/80 px-6 py-4 backdrop-blur-md">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <a href="../index.html" class="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-bold text-slate-300 hover:text-white">← Modes</a>
+        <div>
+          <h1 class="text-xl font-black tracking-tight text-white">Friday Vibe Lucky Dip</h1>
+          <p class="text-xs font-medium text-slate-400">Spill the beans, laugh, and find common ground.</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <button id="sound-toggle" class="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800 p-2 text-sm text-slate-300 transition hover:bg-slate-700">
+          <span id="sound-icon">🔊</span>
+          <span id="sound-text" class="hidden font-semibold sm:inline">Sound On</span>
+        </button>
+        <button id="theme-manager-toggle" class="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition hover:bg-indigo-500">
+          <span>☷</span>
+          <span>Manage Themes (<span id="theme-count">10</span>)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 items-center gap-8 px-4 py-8 lg:grid-cols-12">
+    <section class="flex flex-col items-center justify-center space-y-6 lg:col-span-5">
+      <div id="machine" class="relative flex w-full max-w-[360px] flex-col overflow-hidden rounded-3xl border-4 border-slate-700 bg-slate-900 shadow-2xl">
+        <div class="relative flex h-64 items-center justify-center overflow-hidden border-b-4 border-slate-700 bg-gradient-to-b from-indigo-950/40 to-slate-950/80 p-6">
+          <div class="pointer-events-none absolute left-0 top-0 z-10 h-full w-full bg-gradient-to-tr from-transparent via-white/5 to-transparent"></div>
+          <div id="machine-glow" class="absolute h-44 w-44 rounded-full bg-indigo-500/10 blur-xl transition-all duration-500"></div>
+          <div id="capsules-chamber" class="relative flex h-full w-full flex-wrap items-center justify-center gap-3 transition-transform duration-200"></div>
+        </div>
+
+        <div class="flex flex-1 flex-col items-center justify-between space-y-6 bg-gradient-to-b from-slate-800 to-slate-900 p-6">
+          <div class="relative flex h-20 w-28 items-center justify-center overflow-hidden rounded-xl border-4 border-slate-700 bg-slate-950 shadow-inner">
+            <div id="dispenser-door" class="absolute inset-0 z-10 flex origin-top items-center justify-center border-b border-slate-700 bg-slate-800 transition-all duration-300">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Push</span>
+            </div>
+            <div id="dispatched-capsule" class="z-0 hidden scale-110 transform transition duration-500 ease-out"></div>
+          </div>
+
+          <button id="dip-button" class="group relative h-16 w-full rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-[3px] font-extrabold shadow-xl transition-transform hover:shadow-indigo-500/20 active:scale-95">
+            <span class="flex h-full w-full items-center justify-center gap-2 rounded-xl bg-slate-900 text-lg uppercase tracking-wide text-white transition-all group-hover:bg-slate-950/20">
+              🎮 Pull the Vibe
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs font-medium text-slate-500">
+        <span class="h-2 w-2 animate-pulse rounded-full bg-emerald-500"></span>
+        Ready for Friday Fun
+      </span>
+    </section>
+
+    <section class="flex min-h-[480px] flex-col justify-center lg:col-span-7">
+      <div id="card-placeholder" class="flex flex-col items-center justify-center space-y-6 rounded-3xl border border-slate-800/80 bg-slate-900/60 p-12 text-center shadow-xl backdrop-blur-sm">
+        <div class="flex h-24 w-24 items-center justify-center rounded-full border border-indigo-500/30 bg-gradient-to-tr from-indigo-500/20 to-pink-500/20 text-4xl">🎁</div>
+        <div class="max-w-md">
+          <h2 class="mb-2 text-2xl font-bold text-slate-100">Ready to Spill Some Beans?</h2>
+          <p class="text-sm text-slate-400">Activate the lucky dip machine to reveal a storytelling topic for quick-fire sharing.</p>
+        </div>
+      </div>
+
+      <div id="vibe-card" class="hidden w-full flex-col space-y-6 overflow-hidden rounded-3xl border-2 border-slate-700/80 bg-gradient-to-tr from-slate-900 to-slate-950 p-6 shadow-2xl md:flex md:p-8">
+        <div class="flex items-start gap-4 border-b border-slate-800 pb-4">
+          <div id="theme-icon-bg" class="flex-shrink-0 rounded-2xl border border-indigo-500/30 bg-indigo-600/20 p-4 text-3xl text-indigo-400">
+            <span id="theme-icon">🚗</span>
+          </div>
+          <div>
+            <div class="mb-1 flex items-center gap-2">
+              <span id="theme-category" class="text-xs font-bold uppercase tracking-wider text-pink-400">On the Road</span>
+              <span class="h-1.5 w-1.5 rounded-full bg-slate-600"></span>
+              <span class="text-xs font-medium text-slate-400">Lucky Dip Pull</span>
+            </div>
+            <h2 id="theme-title" class="text-2xl font-black text-white md:text-3xl">Driving Mishaps</h2>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <p id="theme-prompt" class="text-lg font-semibold leading-relaxed text-slate-100 md:text-xl"></p>
+          <div>
+            <span class="mb-2 block text-[10px] font-bold uppercase tracking-widest text-slate-400">Need a starting point? Think about:</span>
+            <div id="theme-helpers" class="flex flex-wrap gap-2"></div>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-900/80 p-4 md:flex-row">
+          <div class="flex items-center gap-3">
+            <div class="rounded-xl bg-slate-800 p-2.5 text-xl text-indigo-400">⏱</div>
+            <div>
+              <h4 class="text-xs font-bold text-slate-300">Speaker Timer</h4>
+              <p class="text-xs text-slate-500">Keep stories fast and punchy</p>
+            </div>
+          </div>
+          <div class="flex w-full items-center justify-end gap-4 md:w-auto">
+            <button id="timer-minus" class="h-8 rounded-lg bg-slate-800 px-2 text-xs text-slate-300 transition hover:bg-slate-700">-15s</button>
+            <div id="timer-display" class="min-w-[70px] rounded-xl border border-slate-800 bg-slate-950 px-4 py-1.5 text-center font-mono text-xl font-bold text-emerald-400">02:00</div>
+            <button id="timer-plus" class="h-8 rounded-lg bg-slate-800 px-2 text-xs text-slate-300 transition hover:bg-slate-700">+15s</button>
+            <button id="timer-btn" class="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-indigo-500">▶ Start</button>
+          </div>
+        </div>
+
+        <div class="border-t border-slate-800 pt-5">
+          <p class="mb-3 text-xs font-semibold text-slate-400">Live Team Vibe Check:</p>
+          <div id="vote-grid" class="grid grid-cols-4 gap-2"></div>
+        </div>
+
+        <div id="spin-history" class="hidden items-center justify-between border-t border-slate-800 pt-4">
+          <span class="text-xs font-semibold text-slate-500">Previous Picks:</span>
+          <div id="history-container" class="flex gap-2"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <aside id="theme-manager-panel" class="fixed inset-y-0 right-0 z-40 flex w-full max-w-md translate-x-full transform flex-col border-l border-slate-800 bg-slate-900 shadow-2xl transition-transform duration-300">
+    <div class="flex items-center justify-between border-b border-slate-800 p-6">
+      <h3 class="text-lg font-bold text-white">Vibe Theme Database</h3>
+      <button id="theme-manager-close" class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800 text-slate-400 transition hover:bg-slate-700 hover:text-white">×</button>
+    </div>
+
+    <div class="border-b border-slate-800 bg-slate-950/50 p-6">
+      <h4 class="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Add Custom Story Theme</h4>
+      <div class="space-y-3">
+        <input id="new-title" type="text" placeholder="Theme Title" class="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <div class="grid grid-cols-2 gap-2">
+          <select id="new-category" class="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="On the Road">On the Road</option>
+            <option value="Confessions">Confessions</option>
+            <option value="Career Stories">Career Stories</option>
+            <option value="Teenage Years">Teenage Years</option>
+            <option value="Blunders">Blunders</option>
+            <option value="School Days">School Days</option>
+          </select>
+          <select id="new-icon" class="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="🚗">Car</option>
+            <option value="🤫">Confession</option>
+            <option value="😲">Surprise</option>
+            <option value="😆">Laugh</option>
+            <option value="🔥">Fire</option>
+            <option value="👻">Spooky</option>
+          </select>
+        </div>
+        <textarea id="new-prompt" rows="2" placeholder="Tell us about a time you..." class="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+        <input id="new-helpers" type="text" placeholder="Helpers, comma separated" class="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <button id="add-theme-btn" class="w-full rounded-xl bg-indigo-600 py-2.5 text-sm font-bold text-white transition hover:bg-indigo-500">Add to Lucky Dip Pool</button>
+      </div>
+    </div>
+
+    <div class="flex-1 space-y-4 overflow-y-auto p-6">
+      <h4 class="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">Dip Pool Contents (<span id="theme-list-count">0</span>)</h4>
+      <div id="theme-list" class="space-y-3"></div>
+    </div>
+  </aside>
+
+  <div id="overlay-backdrop" class="fixed inset-0 z-30 hidden bg-black/60 backdrop-blur-sm"></div>
+
+  <script src="../assets/js/shared.js"></script>
+  <script src="../assets/js/lucky-dip.js"></script>
+</body>
+</html>

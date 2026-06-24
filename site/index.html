@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spin Machine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/shared.css">
+  <link rel="stylesheet" href="assets/css/home.css">
+</head>
+<body class="app-shell min-h-screen text-white">
+  <main class="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-center px-4 py-10">
+    <header class="mb-10 max-w-3xl">
+      <p class="app-kicker mb-3">Interactive Meeting Tools</p>
+      <h1 class="text-5xl font-black tracking-tight md:text-7xl">Spin Machine</h1>
+      <p class="mt-4 text-lg text-indigo-100 md:text-xl">
+        Choose a mode for Friday team rituals: assign highlights with the wheel, or pull a storytelling prompt from the lucky dip.
+      </p>
+    </header>
+
+    <section class="grid gap-5 md:grid-cols-2">
+      <a class="mode-card group" href="modes/friday-flip.html">
+        <span class="mode-icon">↻</span>
+        <span class="app-kicker">Person + Prompt Wheel</span>
+        <h2>The Friday Flip</h2>
+        <p>Spin for a team member, match them with a weekly reflection category, nominate substitutes, and log recent highlights.</p>
+        <span class="mode-action">Open mode <span aria-hidden="true">→</span></span>
+      </a>
+
+      <a class="mode-card group" href="modes/lucky-dip.html">
+        <span class="mode-icon">◈</span>
+        <span class="app-kicker">Story Prompt Machine</span>
+        <h2>Friday Vibe Lucky Dip</h2>
+        <p>Pull a random storytelling theme, manage the prompt pool, vote on the vibe, and keep speakers on time.</p>
+        <span class="mode-action">Open mode <span aria-hidden="true">→</span></span>
+      </a>
+    </section>
+  </main>
+</body>
+</html>

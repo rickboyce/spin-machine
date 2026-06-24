@@ -1,0 +1,54 @@
+.mode-card {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  color: #1e293b;
+  display: flex;
+  flex-direction: column;
+  min-height: 19rem;
+  padding: 2rem;
+  text-decoration: none;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.mode-card:hover {
+  border-color: rgba(244, 63, 94, 0.45);
+  box-shadow: 0 28px 60px rgba(15, 23, 42, 0.35);
+  transform: translateY(-4px);
+}
+
+.mode-card h2 {
+  color: #0f172a;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 0.98;
+  margin: 1.25rem 0 1rem;
+}
+
+.mode-card p {
+  color: #475569;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.mode-icon {
+  align-items: center;
+  background: #111827;
+  border-radius: 8px;
+  color: white;
+  display: flex;
+  font-size: 2rem;
+  font-weight: 900;
+  height: 4rem;
+  justify-content: center;
+  width: 4rem;
+}
+
+.mode-action {
+  color: var(--primary);
+  font-weight: 900;
+  margin-top: auto;
+  padding-top: 2rem;
+}
