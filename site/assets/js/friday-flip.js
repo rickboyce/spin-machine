@@ -1,5 +1,5 @@
 (() => {
-  const { beep, capsuleSvg, fanfare, getTeam, initAudio, qs, saveTeam, setMuted, startLoop, stopLoop, timeLabel } = window.SpinMachine;
+  const { beep, capsuleSvg, fanfare, getTeam, initAudio, qs, saveTeam, setMuted, startLoop, stopLoop, timeLabel, weightedChoice } = window.SpinMachine;
   const categories = [
     { short: "Client HL", full: "Highlight of the Week on Client", icon: "🤝" },
     { short: "Pipeline HL", full: "Highlight of the Week on Pipeline", icon: "🚀" },
@@ -23,8 +23,65 @@
   let activeTeam = team.filter((person) => person.active);
   let rotation = 0;
   let isSpinning = false;
-  let lastResult = { name: null, category: null, fullCategory: null };
+  let lastResult = { personId: null, name: null, category: null, fullCategory: null };
   let spinHistory = [];
+  let acceptedTurns = 0;
+  const speakerStats = new Map(team.map((person) => [person.id, { spoken: 0, lastTurn: null }]));
+  const categoryStats = new Map(categories.map((category) => [category.short, { landed: 0, lastSpin: null }]));
+  let categorySpins = 0;
+
+  function turnsSince(lastTurn, currentTurn) {
+    return lastTurn === null ? Infinity : currentTurn - lastTurn;
+  }
+
+  function selectSpeaker() {
+    return weightedChoice(activeTeam, (person) => {
+      const stats = speakerStats.get(person.id) || { spoken: 0, lastTurn: null };
+      const since = turnsSince(stats.lastTurn, acceptedTurns);
+      const freshness = stats.lastTurn === null ? 3 : Math.min(3, 0.7 + since * 0.45);
+      const underrepresented = 1 / (1 + stats.spoken);
+      const cooldown = since <= 1 ? 0.12 : since === 2 ? 0.45 : 1;
+
+      return freshness * underrepresented * cooldown;
+    });
+  }
+
+  function selectCategory() {
+    return weightedChoice(categories, (category) => {
+      const stats = categoryStats.get(category.short) || { landed: 0, lastSpin: null };
+      const since = turnsSince(stats.lastSpin, categorySpins);
+      const freshness = stats.lastSpin === null ? 2 : Math.min(2.4, 0.65 + since * 0.35);
+      const undercovered = 1 / (1 + stats.landed);
+      const cooldown = since <= 1 ? 0.18 : since === 2 ? 0.55 : 1;
+
+      return freshness * undercovered * cooldown;
+    });
+  }
+
+  function targetRotationForCategory(category) {
+    const segmentSize = 360 / categories.length;
+    const index = categories.indexOf(category);
+    const safeJitter = (Math.random() - 0.5) * segmentSize * 0.45;
+    const desiredDeg = (360 - (index + 0.5) * segmentSize + safeJitter + 360) % 360;
+    const currentDeg = ((rotation % 360) + 360) % 360;
+    const delta = (desiredDeg - currentDeg + 360) % 360;
+
+    return rotation + 1440 + Math.floor(Math.random() * 6) * 360 + delta;
+  }
+
+  function recordCategory(category) {
+    const stats = categoryStats.get(category.short) || { landed: 0, lastSpin: null };
+    stats.landed += 1;
+    stats.lastSpin = categorySpins;
+    categoryStats.set(category.short, stats);
+  }
+
+  function recordSpeaker(personId) {
+    const stats = speakerStats.get(personId) || { spoken: 0, lastTurn: null };
+    stats.spoken += 1;
+    stats.lastTurn = acceptedTurns;
+    speakerStats.set(personId, stats);
+  }
 
   function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
     const angleInRadians = (angleInDegrees - 90) * Math.PI / 180;
@@ -168,7 +225,8 @@
     qs("aiPromptArea").classList.add("hidden");
 
     const durationMs = 5000;
-    const targetRotation = rotation + 1440 + Math.floor(Math.random() * 3600);
+    const chosenCategory = selectCategory();
+    const targetRotation = targetRotationForCategory(chosenCategory);
     animateWheelTicks(rotation, targetRotation, durationMs);
     startLoop(durationMs);
     rotation = targetRotation;
@@ -181,9 +239,11 @@
       fanfare();
       const actualDeg = rotation % 360;
       const index = Math.floor(((360 - actualDeg) % 360) / (360 / categories.length));
-      const category = categories[index];
-      const winner = activeTeam[Math.floor(Math.random() * activeTeam.length)];
-      lastResult = { name: winner.name, category: category.short, fullCategory: category.full };
+      const category = categories[index] || chosenCategory;
+      const winner = selectSpeaker();
+      categorySpins += 1;
+      recordCategory(category);
+      lastResult = { personId: winner.id, name: winner.name, category: category.short, fullCategory: category.full };
       showResult(winner.name, category);
       if (window.confetti) {
         window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: palette });
@@ -201,6 +261,7 @@
       button.className = "rounded-xl border-2 border-slate-100 bg-white p-3 text-sm font-bold transition-all hover:border-indigo-500 hover:text-indigo-600";
       button.innerText = person.name;
       button.addEventListener("click", () => {
+        lastResult.personId = person.id;
         lastResult.name = person.name;
         showResult(person.name, { short: lastResult.category, full: lastResult.fullCategory });
         qs("nominationPanel").classList.add("hidden");
@@ -213,6 +274,8 @@
   }
 
   function acceptTurn() {
+    acceptedTurns += 1;
+    recordSpeaker(lastResult.personId || lastResult.name);
     spinHistory.unshift({ name: lastResult.name, category: lastResult.category, time: timeLabel() });
     updateHistory();
     qs("resultCard").classList.add("hidden");

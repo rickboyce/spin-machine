@@ -1,5 +1,5 @@
 (() => {
-  const { beep, capsuleSvg, fanfare, initAudio, qs, setMuted } = window.SpinMachine;
+  const { beep, capsuleSvg, fanfare, initAudio, qs, setMuted, weightedChoice } = window.SpinMachine;
   const capsuleColors = ["#ef4444", "#ec4899", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6"];
   const votes = [
     { id: "hype", label: "Spicy Topic", icon: "🔥", color: "text-indigo-400" },
@@ -28,6 +28,54 @@
   let timerInterval = null;
   let totalSeconds = 120;
   let timerRunning = false;
+  let themePulls = 0;
+  const themeStats = new Map();
+  const categoryStats = new Map();
+
+  function pullsSince(lastPull) {
+    return lastPull === null || lastPull === undefined ? Infinity : themePulls - lastPull;
+  }
+
+  function ensureThemeStats(theme) {
+    if (!themeStats.has(theme.id)) {
+      themeStats.set(theme.id, { pulled: 0, lastPull: null });
+    }
+    if (!categoryStats.has(theme.category)) {
+      categoryStats.set(theme.category, { pulled: 0, lastPull: null });
+    }
+  }
+
+  function selectTheme() {
+    themes.forEach(ensureThemeStats);
+
+    return weightedChoice(themes, (theme) => {
+      const themeRecord = themeStats.get(theme.id);
+      const categoryRecord = categoryStats.get(theme.category);
+      const themeSince = pullsSince(themeRecord.lastPull);
+      const categorySince = pullsSince(categoryRecord.lastPull);
+      const themeFreshness = themeRecord.lastPull === null ? 2.6 : Math.min(2.6, 0.55 + themeSince * 0.35);
+      const categoryFreshness = categoryRecord.lastPull === null ? 1.8 : Math.min(1.8, 0.7 + categorySince * 0.25);
+      const themeCoverage = 1 / (1 + themeRecord.pulled);
+      const categoryCoverage = 1 / (1 + categoryRecord.pulled * 0.35);
+      const exactCooldown = themeSince <= 3 ? 0.06 : themeSince === 4 ? 0.35 : 1;
+      const categoryCooldown = categorySince <= 1 ? 0.45 : categorySince === 2 ? 0.75 : 1;
+
+      return themeFreshness * categoryFreshness * themeCoverage * categoryCoverage * exactCooldown * categoryCooldown;
+    });
+  }
+
+  function recordThemePull(theme) {
+    ensureThemeStats(theme);
+    themePulls += 1;
+
+    const themeRecord = themeStats.get(theme.id);
+    themeRecord.pulled += 1;
+    themeRecord.lastPull = themePulls;
+
+    const categoryRecord = categoryStats.get(theme.category);
+    categoryRecord.pulled += 1;
+    categoryRecord.lastPull = themePulls;
+  }
 
   function renderCapsules() {
     qs("capsules-chamber").innerHTML = capsuleColors.map((color, index) => {
@@ -109,7 +157,7 @@
 
     setTimeout(() => {
       clearInterval(spinBeepInterval);
-      selectedTheme = themes[Math.floor(Math.random() * themes.length)];
+      selectedTheme = selectTheme();
       qs("machine").classList.remove("animate-shake");
       qs("machine-glow").classList.remove("bg-pink-500/40", "neon-glow-accent");
       qs("machine-glow").classList.add("bg-emerald-500/20", "neon-glow-primary");
@@ -137,6 +185,7 @@
     resetTimer();
     triggerConfetti();
     fanfare();
+    recordThemePull(selectedTheme);
     if (!spinHistory.includes(selectedTheme.title)) {
       spinHistory.unshift(selectedTheme.title);
       if (spinHistory.length > 3) spinHistory.pop();
