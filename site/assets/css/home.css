@@ -52,3 +52,114 @@
   margin-top: auto;
   padding-top: 2rem;
 }
+
+.team-config {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  color: #1e293b;
+  padding: 1.5rem;
+}
+
+.team-config-header,
+.team-config-toolbar {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.team-config h2 {
+  color: #0f172a;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1;
+  margin: 0.85rem 0 0;
+}
+
+.quick-team,
+.team-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.quick-team label,
+#homeTeamCount {
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.quick-team input,
+.quick-team button,
+.team-actions button {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 800;
+  min-height: 2.5rem;
+  padding: 0.55rem 0.75rem;
+}
+
+.quick-team input {
+  background: white;
+  color: #0f172a;
+  width: 5.5rem;
+}
+
+.quick-team button,
+.team-actions button {
+  background: #111827;
+  color: white;
+  cursor: pointer;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.team-actions button {
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+.quick-team button:hover,
+.team-actions button:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.quick-team button:active,
+.team-actions button:active {
+  transform: scale(0.97);
+}
+
+.team-config-toolbar {
+  border-top: 1px solid #e2e8f0;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+}
+
+.team-list {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  margin-top: 1rem;
+}
+
+@media (max-width: 720px) {
+  .team-config-header,
+  .team-config-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .quick-team,
+  .team-actions {
+    justify-content: flex-start;
+  }
+}

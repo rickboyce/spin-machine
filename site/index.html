@@ -38,6 +38,33 @@
         <span class="mode-action">Open mode <span aria-hidden="true">→</span></span>
       </a>
     </section>
+
+    <section class="team-config mt-6">
+      <div class="team-config-header">
+        <div>
+          <span class="app-kicker">Team Setup</span>
+          <h2>Who's in the room?</h2>
+        </div>
+        <div class="quick-team">
+          <label for="quickTeamSize">Team size</label>
+          <input id="quickTeamSize" type="number" min="1" max="24" step="1" value="6" aria-label="Team size">
+          <button id="quickTeamBtn" type="button">Set size</button>
+        </div>
+      </div>
+
+      <div class="team-config-toolbar">
+        <span id="homeTeamCount"></span>
+        <div class="team-actions">
+          <button id="selectAllTeamBtn" type="button">All in</button>
+          <button id="deselectAllTeamBtn" type="button">All out</button>
+        </div>
+      </div>
+
+      <div id="homeTeamList" class="team-list" aria-live="polite"></div>
+    </section>
   </main>
+
+  <script src="assets/js/shared.js"></script>
+  <script src="assets/js/home.js"></script>
 </body>
 </html>

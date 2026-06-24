@@ -159,6 +159,117 @@ body {
   animation: float 3s ease-in-out infinite;
 }
 
+.team-person {
+  align-items: stretch;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  min-width: 0;
+  padding: 0;
+}
+
+.team-person:hover .team-pill,
+.team-person:focus-visible .team-pill {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
+}
+
+.team-person:focus-visible {
+  outline: 0;
+}
+
+.team-ball {
+  align-items: center;
+  background: #0f172a;
+  border: 0;
+  border-radius: 999px 0 0 999px;
+  cursor: pointer;
+  display: flex;
+  flex: 0 0 3.25rem;
+  justify-content: center;
+  padding: 0;
+  transition: filter 160ms ease, opacity 160ms ease, transform 160ms ease;
+}
+
+.team-ball svg {
+  display: block;
+}
+
+.team-ball:active {
+  transform: scale(0.96);
+}
+
+.team-pill {
+  align-items: center;
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-left: 0;
+  border-radius: 0 999px 999px 0;
+  cursor: pointer;
+  display: flex;
+  flex: 1;
+  gap: 0.65rem;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 0.7rem 0.75rem 0.7rem 0.8rem;
+  transition: background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.team-name-input,
+.team-name-label {
+  background: transparent;
+  border: 0;
+  color: #0f172a;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 900;
+  min-width: 0;
+  outline: 0;
+  overflow: hidden;
+  padding: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team-name-input:focus {
+  color: var(--primary);
+}
+
+.team-presence {
+  background: #dcfce7;
+  border-radius: 999px;
+  color: #166534;
+  flex: 0 0 auto;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 0.22rem 0.45rem;
+  text-transform: uppercase;
+}
+
+.team-person.is-inactive .team-ball {
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+
+.team-person.is-inactive .team-pill {
+  background: #f1f5f9;
+}
+
+.team-person.is-inactive .team-presence {
+  background: #e2e8f0;
+  color: #64748b;
+}
+
+.team-person.is-inactive .team-name-input,
+.team-person.is-inactive .team-name-label {
+  color: #94a3b8;
+  text-decoration: line-through;
+}
+
 .result-entry {
   animation: slide-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }

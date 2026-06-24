@@ -1,6 +1,5 @@
 (() => {
-  const { beep, fanfare, initAudio, qs, setMuted, startLoop, stopLoop, timeLabel } = window.SpinMachine;
-  const team = ["Filipa", "Mike", "Rick", "Catherine", "Linda", "Steve", "Robert", "Kyle", "Natasha", "Chris"];
+  const { beep, capsuleSvg, fanfare, getTeam, initAudio, qs, saveTeam, setMuted, startLoop, stopLoop, timeLabel } = window.SpinMachine;
   const categories = [
     { short: "Client HL", full: "Highlight of the Week on Client", icon: "🤝" },
     { short: "Pipeline HL", full: "Highlight of the Week on Pipeline", icon: "🚀" },
@@ -19,7 +18,9 @@
     "What part of that story deserves a second look because it was quietly important?"
   ];
 
-  let activeTeam = [...team];
+  let savedTeam = getTeam();
+  let team = savedTeam.filter((person) => person.included);
+  let activeTeam = team.filter((person) => person.active);
   let rotation = 0;
   let isSpinning = false;
   let lastResult = { name: null, category: null, fullCategory: null };
@@ -78,19 +79,37 @@
   function renderTeam() {
     qs("teamGrid").innerHTML = "";
     qs("teamCount").innerText = `${activeTeam.length}/${team.length} Present`;
-    team.forEach((name) => {
-      const isActive = activeTeam.includes(name);
+    team.forEach((person) => {
+      const isActive = activeTeam.some((candidate) => candidate.id === person.id);
       const badge = document.createElement("button");
       badge.type = "button";
-      badge.className = `rounded-full border px-3 py-1.5 text-xs font-bold shadow-sm transition-all ${
-        isActive
-          ? "border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-700"
-          : "border-slate-200 bg-slate-100 text-slate-400 line-through opacity-60"
-      }`;
-      badge.innerText = name;
+      badge.className = `team-person w-full text-left ${isActive ? "" : "is-inactive"}`;
+      badge.setAttribute("aria-label", `${isActive ? "Deselect" : "Select"} ${person.name}`);
+
+      const ball = document.createElement("span");
+      ball.className = "team-ball";
+      ball.innerHTML = capsuleSvg(person.color, 38);
+
+      const pill = document.createElement("span");
+      pill.className = "team-pill";
+
+      const name = document.createElement("span");
+      name.className = "team-name-label";
+      name.innerText = person.name;
+
+      const state = document.createElement("span");
+      state.className = "team-presence";
+      state.innerText = isActive ? "In" : "Out";
+
+      pill.append(name, state);
+      badge.append(ball, pill);
       badge.addEventListener("click", () => {
         if (isSpinning) return;
-        activeTeam = isActive ? activeTeam.filter((person) => person !== name) : [...activeTeam, name];
+        savedTeam = saveTeam(savedTeam.map((candidate) => (
+          candidate.id === person.id ? { ...candidate, active: !isActive } : candidate
+        )));
+        team = savedTeam.filter((candidate) => candidate.included);
+        activeTeam = team.filter((candidate) => candidate.active);
         renderTeam();
         updateSpinButtonState();
       });
@@ -164,8 +183,8 @@
       const index = Math.floor(((360 - actualDeg) % 360) / (360 / categories.length));
       const category = categories[index];
       const winner = activeTeam[Math.floor(Math.random() * activeTeam.length)];
-      lastResult = { name: winner, category: category.short, fullCategory: category.full };
-      showResult(winner, category);
+      lastResult = { name: winner.name, category: category.short, fullCategory: category.full };
+      showResult(winner.name, category);
       if (window.confetti) {
         window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: palette });
       }
@@ -177,13 +196,13 @@
     qs("nominationPanel").classList.toggle("hidden");
     const list = qs("nomineeList");
     list.innerHTML = "";
-    activeTeam.filter((name) => name !== lastResult.name).forEach((name) => {
+    activeTeam.filter((person) => person.name !== lastResult.name).forEach((person) => {
       const button = document.createElement("button");
       button.className = "rounded-xl border-2 border-slate-100 bg-white p-3 text-sm font-bold transition-all hover:border-indigo-500 hover:text-indigo-600";
-      button.innerText = name;
+      button.innerText = person.name;
       button.addEventListener("click", () => {
-        lastResult.name = name;
-        showResult(name, { short: lastResult.category, full: lastResult.fullCategory });
+        lastResult.name = person.name;
+        showResult(person.name, { short: lastResult.category, full: lastResult.fullCategory });
         qs("nominationPanel").classList.add("hidden");
       });
       list.appendChild(button);
